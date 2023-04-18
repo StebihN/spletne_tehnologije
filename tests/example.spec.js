@@ -1,32 +1,26 @@
-import { _electron as electron } from "playwright";
-import { test, expect } from "@playwright/test";
+const { _electron: electron } = require('playwright');
+const { test, expect } = require('@playwright/test');
 
-test("Launch electron app", async () => {
-  const electronApp = await electron.launch({ args: ["."] });
+let window, electronApp;
 
-  const windowState = await electronApp.evaluate(async ({ BrowserWindow }) => {
-    const mainWindow = BrowserWindow.getAllWindows()[0];
+test.beforeAll(async () => {
+  electronApp = await electron.launch({ args: ['.'] });
 
-    const getState = () => ({
-      isVisible: mainWindow.isVisible(),
-      isDevToolsOpened: mainWindow.webContents.isDevToolsOpened(),
-      isCrashed: mainWindow.webContents.isCrashed(),
-    });
-
-    return new Promise((resolve) => {
-      if (mainWindow.isVisible()) {
-        resolve(getState());
-      } else {
-        mainWindow.once("ready-to-show", () =>
-          setTimeout(() => resolve(getState()), 0)
-        );
-      }
-    });
+  const appPath = await electronApp.evaluate(async ({ app }) => {
+    return app.getAppPath();
   });
 
-  expect(windowState.isVisible).toBeTruthy();
-  expect(windowState.isDevToolsOpened).toBeFalsy();
-  expect(windowState.isCrashed).toBeFalsy();
+  window = await electronApp.firstWindow();
+});
 
+test('window has correct title', async () => {
+  await window.goto('http://localhost:3000');
+  await window.waitForLoadState('domcontentloaded');
+  const title = await window.title();
+  expect(title).toBe('Electron JS vaja Spletne tehnologije'); 
+});
+
+
+test.afterAll(async () => {
   await electronApp.close();
 });

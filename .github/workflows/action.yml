@@ -20,6 +20,8 @@ jobs:
             ${{ runner.os }}-
       - name: Install Node dependencies
         run: npm install
+      - name: run react
+        run: npm start
       - name: Run tests
         run: npm test
         timeout-minutes: 5
