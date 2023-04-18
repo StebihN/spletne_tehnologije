@@ -1,0 +1,29 @@
+body{
+  background-color: transparent !important;
+}
+.container {
+  padding: 20px;
+}
+
+.row {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.col {
+  background-color: #fff;
+  box-shadow: 0 2px 4px 0 #ccd0d9;
+  border-radius: 4px;
+  margin: 0 20px 16px 0;
+  padding: 32px;
+  cursor: pointer;
+}
+
+.link_text{
+  color:black;
+  text-align: center;
+  text-decoration: none;
+}
+.link_text_text{
+  padding:20px;
+}
