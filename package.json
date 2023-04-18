@@ -33,9 +33,7 @@
     "test": "npx playwright test",
     "eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm run electron:start\"",
-    "electron:start": "wait-on http://127.0.0.1:3000 && electron .",
-    "test:prepare": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm run test:git\" \"exit 0\"",
-    "test:git":"wait-on http://127.0.0.1:3000 && npm test"
+    "electron:start": "wait-on http://127.0.0.1:3000 && electron ."
   },
   "eslintConfig": {
     "extends": [

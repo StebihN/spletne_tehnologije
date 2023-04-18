@@ -21,8 +21,14 @@ jobs:
       - name: Install Playwright
         run: npx playwright install
 
+      - name: start react
+        run: npm start &
+
       - name: Run Playwright tests
-        run: npm run test:prepare
+        run: npm run test
+
+      - name: Kill React process
+        run: kill -15 $(lsof -ti:3000)
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v2
