@@ -18,6 +18,7 @@ test('window has correct title', async () => {
   await window.waitForLoadState('domcontentloaded');
   const title = await window.title();
   expect(title).toBe('Electron JS vaja Spletne tehnologije'); 
+  //testtest
 });
 
 
