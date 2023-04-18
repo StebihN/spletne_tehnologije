@@ -1,7 +1,8 @@
 name: Test
 
-on: push
-  branch: main
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   test:
