@@ -22,8 +22,7 @@
     "react-router-dom": "^6.9.0",
     "react-scripts": "^5.0.1",
     "react-toastify": "^9.1.2",
-    "wait-on": "^7.0.1",
-    "web-vitals": "^2.1.4"
+    "wait-on": "^7.0.1"
   },
   "main": "public/main.js",
   "icon": "../public/favicon.ico",
@@ -34,7 +33,9 @@
     "test": "npx playwright test",
     "eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm run electron:start\"",
-    "electron:start": "wait-on http://127.0.0.1:3000 && electron ."
+    "electron:start": "wait-on http://127.0.0.1:3000 && electron .",
+    "test:prepare": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm test:git\"",
+    "test:git":"wait-on http://127.0.0.1:3000 && npm test"
   },
   "eslintConfig": {
     "extends": [
