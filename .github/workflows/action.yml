@@ -1,6 +1,7 @@
 name: Test
 
 on: push
+  branch: main
 
 jobs:
   test:
