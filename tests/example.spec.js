@@ -2,7 +2,7 @@ import { _electron as electron } from "playwright";
 import { test, expect } from "@playwright/test";
 
 test("Launch electron app", async () => {
-  const electronApp = await electron.launch({ args: ["./public/main.js"] });
+  const electronApp = await electron.launch({ args: ["public/main.js"] });
 
   const windowState = await electronApp.evaluate(async ({ BrowserWindow }) => {
     const mainWindow = BrowserWindow.getAllWindows()[0];
