@@ -43,7 +43,7 @@ export default function GetAll() {
         let elements = []
         users.map((user, index) => (
             elements.push(
-                <Col sm={5} className='col' key={user.id}>
+                <Col id={"user" + index}sm={5} className='col' key={user.id}>
                     <h2>{user.name} {user.surname}</h2>
                     <h3>Naročnina: {user.is_subscribed}</h3>
                     <Button variant="secondary" onClick={() => Redirect(user.id)}>Uredi</Button>
@@ -54,23 +54,22 @@ export default function GetAll() {
         return <Container><Row>{elements}</Row></Container>
     }
     function Redirect(id) {
-        navigate('../uredi', {state:{id:id}})
+        navigate('../uredi', { state: { id: id } })
     }
-    let test = window.localStorage.getItem("test")
     if (users.length > 0) {
         return (
 
             <>
-                <h1>{test}</h1>
-                <MapUsers></MapUsers>
-                <ToastContainer />
+                <Container>
+                    <MapUsers></MapUsers>
+                    <ToastContainer />
+                </Container>
             </>
         )
     } else {
         return (
             <>
                 <Container>
-                <h1>{test}</h1>
                     <h3>Ni uporabnikov!</h3>
                 </Container>
                 <ToastContainer />
