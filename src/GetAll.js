@@ -1,57 +1,71 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Row, Container, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 
-export default function GetAll() {
+
+export default function GetAll(props) {
     const navigate = useNavigate();
-    const dataFetchedRef = useRef(false);
-    const [users, setUsers] = useState('');
+    const [users, setUsers] = useState([]);
+
 
     const url = "http://localhost:5000/users";
 
     useEffect(() => {
-        if (dataFetchedRef.current) return;
-        dataFetchedRef.current = true;
         getAllUsers();
-    }, []);
+    }, [props.connection]);
+
 
     const getAllUsers = () => {
-        axios.get(url)
-            .then((response) => {
-                console.log(response.data);
-                setUsers(response.data);
-                toast.success('Pridobivanje podatkov')
-            })
-            .catch(error => {
-                console.error(`Error: ${error}`)
-                toast.error("napaka pri pridobivanju podatkov")
-            })
+        if (props.connection) {
+            console.log("connection is available")
+            axios.get(url, {headers:{token: localStorage.getItem("token")}})
+                .then((response) => {
+                    toast.success('Pridobivanje podatkov')
+                    setUsers(response.data)
+                    console.log(response.data)
+                })
+                .catch(error => {
+                    toast.error("napaka pri pridobivanju podatkov")
+                    console.log(`error ${error}`)
+                })
+        }
+        else {
+            let localUsers = []
+            for (let i = 0; i < localStorage.length; i++) {
+                if(localStorage.getItem(localStorage.key(i)).includes("{")){
+                    localUsers.push(JSON.parse(localStorage.getItem(localStorage.key(i))))
+                }                
+            }
+            setUsers(localUsers)
+        }
+
     }
     const deleteUser = (id) => {
-        axios.delete(`${url}/${id}`).then((response) => {
+        axios.delete(`${url}/${id}`, {headers:{token: localStorage.getItem("token")}})
+        .then((response) => {
             toast.info('Uporabnik izbrisan')
             getAllUsers()
         }).catch(error => {
-            console.error(`Error: ${error}`)
             toast.error("napaka pri brisanju uporabnika")
         })
     }
 
     function MapUsers() {
         let elements = []
-        users.map((user, index) => (
+        users.map((user, index) => {
             elements.push(
-                <Col id={"user" + index}sm={5} className='col' key={user.id}>
+                <Col id={"user" + index} sm={5} className='col' key={user.id}>
                     <h2>{user.name} {user.surname}</h2>
                     <h3>Naročnina: {user.is_subscribed}</h3>
                     <Button variant="secondary" onClick={() => Redirect(user.id)}>Uredi</Button>
                     <Button variant="primary" onClick={() => deleteUser(user.id)}>Izbriši</Button>
                 </Col>
             )
-        ));
-        return <Container><Row>{elements}</Row></Container>
+            return null
+        });
+        return (<Container><Row>{elements}</Row></Container>)
     }
     function Redirect(id) {
         navigate('../uredi', { state: { id: id } })

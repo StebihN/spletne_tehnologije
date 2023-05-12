@@ -1,30 +1,58 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { Button, Container, Form } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 
-export default function CreateUser(){
+export default function CreateUser(props) {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [sub, setSub] = useState('');
-
     const navigate = useNavigate();
 
-    const url = "http://localhost:5000/users";
-
     const createUser = (user) => {
-        axios.post(url,user)
-            .then((response) => {
-                console.log(response);
-                toast.success("Uporabnik vstavljen")
+
+        const url = "http://localhost:5000/users";
+
+        let body = {
+            id: Math.floor(Math.random() * 1001),
+            name: user.name,
+            surname: user.surname,
+            is_subscribed: user.is_subscribed
+        }
+
+        if (props.connection) {
+            console.log("connection is available")
+            axios.post(url, body, {headers:{token: localStorage.getItem("token")}})
+                .then((response) => {
+                    if (response.data.affectedRows === 0) {
+                        console.log('No rows affected. Retrying in 2 seconds...');
+                        setTimeout(createUser(user), 2000);
+                    }
+                    if (response.data.affectedRows === 1) {
+                        localStorage.setItem("user" + body.id, JSON.stringify(body))
+                        toast.success("Uporabnik vstavljen")
+                        Redirect()
+                    }
+                })
+                .catch((error) => {
+                    toast.error("napaka pri pridobivanju podatkov")
+                    console.error(`Error: ${error.message}`);
+                });
+        }
+        else {
+            console.log("no connection")
+            if (localStorage.getItem("user" + body.id)) {
+                console.log('No rows affected. Retrying in 2 seconds...');
+                setTimeout(createUser(user), 2000)
+            } else {
+                localStorage.setItem("user" + body.id, JSON.stringify(body))
+                toast.success("Uporabnik vstavljen v lokalno bazo")
                 Redirect()
-            })
-            .catch(error => {
-                console.error(`Error: ${error}`)
-                toast.error("napaka pri vnašanju uporabnika")
-            })
+            }
+        }
     }
+
     function Redirect() {
         navigate('../')
     }
